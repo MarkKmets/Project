@@ -31,8 +31,9 @@ class FinalWin(QWidget):
         self.layout_line.addWidget(self.workheart, alignment = Qt.AlignCenter)          
         self.setLayout(self.layout_line)
 
-if __name__ == "__main__":
-    print('final')
+if __name__ == '__main__':
     app = QApplication([])
     fw = FinalWin()
     app.exec_()
+
+

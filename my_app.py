@@ -38,8 +38,7 @@ class MainWin(QWidget):
         self.hide()
         self.tw = Testwin()
 
-if __name__ == "__main__": 
-    print("first")
+if __name__ == '__main__':
     app = QApplication([])
     mw = MainWin()
     app.exec_()

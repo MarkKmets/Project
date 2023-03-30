@@ -13,30 +13,38 @@ from instr_py import txt_workheart
 
 class Testwin(QWidget):
     def __init__(self):
-        self.aghx = 15
         super().__init__()
         self.timer1()
         self.set_appear()
         self.initUI()
         self.connects()
         self.show()
-
-        
     def timer1(self):
+        self.btn = 0
+        self.aghx = 15
         self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_time)
         self.timer_label = QLabel(self)
-        self.timer_label.setAlignment(Qt.AlignCenter)
-        self.timer_label.setStyleSheet("font-size: 64px;")
+        self.timer_label.setStyleSheet("color: black; font-size: 64px;")
         self.time_remaining = 15
         self.timer.timeout.connect(self.update_time)
         self.update_time()
         # Create a QTimer to update the time remaining every second
         
         # Update the timer_label with the initial time remaining
-    def start_timer(self):
-        self.timer.start(1000)
-        self.update_time()
+    def start_timer(self, btn):
+        if btn == 1:
+            self.aghx = 15
+        elif btn == 2:
+            self.aghx = 30
+            self.btn = btn
+            self.timer.start(1500)
+            self.update_time()
+        elif btn == 3:
+            self.aghx = 60
+        if btn != 2:
+            self.btn = btn
+            self.timer.start(1000)
+            self.update_time()
     def set_appear(self):
         self.setWindowTitle(instr_py.txt_title)
         self.resize(instr_py.win_width, instr_py.win_height)
@@ -122,14 +130,14 @@ class Testwin(QWidget):
         self.pulse_1 = QLineEdit(instr_py.txt_hinttest1)
         self.test_2_l = QLabel(instr_py.txt_test2)
         self.pulse_2 = QPushButton(instr_py.txt_starttest2, self)
+        self.pulse_2.clicked.connect(lambda: self.start_timer(2))
         self.test_3 = QLabel(instr_py.txt_test3)
         self.last_test = QPushButton(instr_py.txt_starttest3, self)
+        self.last_test.clicked.connect(lambda: self.start_timer(3))
         self.test_3_l = QLineEdit(instr_py.txt_hinttest2)
         self.last_line = QLineEdit(instr_py.txt_hinttest3)
         self.btn_last = QPushButton(instr_py.txt_sendresults)
         self.btn_last.setGeometry(int(instr_py.win_width / 2), instr_py.win_height - 20, self.btn_last.width(), self.btn_last.height())
-
-        # connects
         # довжина кнопок
         btn_width = int(instr_py.win_width / 6)
         line_edit_width = int(instr_py.win_width / 6)
@@ -163,18 +171,48 @@ class Testwin(QWidget):
         self.h_line.addLayout(self.r_line)
         self.h_line.addLayout(self.l_line)
         self.setLayout(self.h_line)
-        self.start_test.clicked.connect(self.start_timer)
+        self.start_test.clicked.connect(lambda: self.start_timer(1))
     def update_time(self):
-        if self.aghx > 0:
-            self.timer_label.setText("00:00:" + str(int(self.aghx)))
-            self.aghx -= 0.5
+        if self.btn == 1 or self.btn == 0:
+            self.timer_label.setStyleSheet("color: black; font-size: 64px;")
+            if self.aghx >= 10:
+                self.timer_label.setText("00:00:" + str(int(self.aghx)))
+                self.aghx -= 1
+            elif self.aghx < 10 and self.aghx > 0:
+                self.timer_label.setText("00:00:0" + str(int(self.aghx)))
+                self.aghx -= 1
+        elif self.btn == 2:
+            self.timer_label.setText(str(int(self.aghx)))
+            self.aghx -= 0.75
+        elif self.btn == 3:
+            if self.aghx >= 45 and self.aghx <= 60:
+                self.timer_label.setText("00:00:" + str(int(self.aghx)))
+                self.timer_label.setStyleSheet("color: lime; font-size: 64px;")
+                self.aghx -= 1
+            elif self.aghx < 45 and self.aghx > 15:
+                self.timer_label.setText("00:00:" + str(int(self.aghx)))
+                self.timer_label.setStyleSheet("color: black; font-size: 64px;")
+                self.aghx -= 1
+            elif self.aghx >= 0 and self.aghx >= 10:
+                self.timer_label.setText("00:00:" + str(int(self.aghx)))
+                self.timer_label.setStyleSheet("color: lime; font-size: 64px;")
+                self.aghx -= 1
+            elif self.aghx >= 0 and self.aghx < 10:
+                self.timer_label.setText("00:00:0" + str(int(self.aghx)))
+                self.timer_label.setStyleSheet("color: lime; font-size: 64px;")
+                self.aghx -= 1
+
+
+
+
+
         else:
             self.timer.stop()
 
-if __name__ == "__main__":
+
+
+
+if __name__ == '__main__':
     app = QApplication([])
     tw = Testwin()
     app.exec_()
-
-
-
